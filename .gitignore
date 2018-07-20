@@ -1,5 +1,9 @@
 .idea/*
 
+*.pyc
+
 # db
 dbconfig.py
+
+
 
