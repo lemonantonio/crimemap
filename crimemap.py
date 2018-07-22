@@ -5,6 +5,8 @@
 """
 
 """
+import json
+
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -21,12 +23,9 @@ DB = DBHelper()
 
 @app.route("/")
 def home():
-    try:
-        data = DB.get_all_inputs()
-    except Exception as e:
-        print e
-        data = None
-    return render_template("home.html", data=data)
+    crimes = DB.get_all_crimes()
+    crimes = json.dumps(crimes)
+    return render_template('home.html', crimes=crimes)
 
 
 @app.route("/add", methods=["POST"])
@@ -45,6 +44,17 @@ def clear():
         DB.clear_all()
     except Exception as e:
         print e
+    return home()
+
+
+@app.route("/submitcrime", methods=['POST'])
+def sumitcrime():
+    category = request.form.get("category")
+    date = request.form.get("date")
+    latitude = float(request.form.get("latitude"))
+    longitude = float(request.form.get("longitude"))
+    description = request.form.get("description")
+    DB.add_crime(category, date, latitude, longitude, description)
     return home()
 
 
